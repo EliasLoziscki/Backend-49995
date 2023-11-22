@@ -1,20 +1,92 @@
 [
 	{
 		"title": "producto prueba",
-		"description": "Este es un producto de prueba",
+		"description": "Este es un producto de prueba1",
 		"price": 500,
 		"thumbnail": "Sin Imagen",
 		"code": "abc123",
 		"stock": 25,
+		"id": 1
+	},
+	{
+		"title": "producto prueba2",
+		"description": "Este es un producto de prueba2",
+		"price": 150,
+		"thumbnail": "Sin Imagen",
+		"code": "abc123",
+		"stock": 30,
 		"id": 2
 	},
 	{
-		"title": "producto prueba",
-		"description": "Este es un producto de prueba",
-		"price": 200,
+		"title": "producto prueba3",
+		"description": "Este es un producto de prueba3",
+		"price": 240,
 		"thumbnail": "Sin Imagen",
 		"code": "abc123",
-		"stock": 25,
+		"stock": 45,
 		"id": 3
+	},
+	{
+		"title": "producto prueba4",
+		"description": "Este es un producto de prueba4",
+		"price": 300,
+		"thumbnail": "Sin Imagen",
+		"code": "abc123",
+		"stock": 65,
+		"id": 4
+	},
+	{
+		"title": "producto prueba5",
+		"description": "Este es un producto de prueba5",
+		"price": 247,
+		"thumbnail": "Sin Imagen",
+		"code": "abc123",
+		"stock": 47,
+		"id": 5
+	},
+	{
+		"title": "producto prueba6",
+		"description": "Este es un producto de prueba6",
+		"price": 654,
+		"thumbnail": "Sin Imagen",
+		"code": "abc123",
+		"stock": 66,
+		"id": 6
+	},
+	{
+		"title": "producto prueba7",
+		"description": "Este es un producto de prueba7",
+		"price": 884,
+		"thumbnail": "Sin Imagen",
+		"code": "abc123",
+		"stock": 54,
+		"id": 7
+	},
+	{
+		"title": "producto prueba8",
+		"description": "Este es un producto de prueba8",
+		"price": 260,
+		"thumbnail": "Sin Imagen",
+		"code": "abc123",
+		"stock": 29,
+		"id": 8
+	},
+	{
+		"title": "producto prueba9",
+		"description": "Este es un producto de prueba9",
+		"price": 355,
+		"thumbnail": "Sin Imagen",
+		"code": "abc123",
+		"stock": 31,
+		"id": 9
+	},
+	{
+		"title": "producto prueba10",
+		"description": "Este es un producto de prueba10",
+		"price": 315,
+		"thumbnail": "Sin Imagen",
+		"code": "abc123",
+		"stock": 14,
+		"id": 10
 	}
 ]
