@@ -1,13 +1,112 @@
 [
 	{
-		"title": "matisad",
-		"description": "Juas",
-		"price": 1505,
-		"thumbnail": "dd",
-		"code": "9",
+		"title": "Samsung s23",
+		"description": "Super celular de Samsung",
+		"price": 1100,
+		"thumbnail": "",
+		"code": "abc123",
 		"stock": 22,
 		"status": "true",
-		"category": "linda",
+		"category": "celulares",
 		"id": 1
+	},
+	{
+		"title": "Samsung s23 Ultra",
+		"description": "El ultra super celular de Samsung",
+		"price": 1250,
+		"thumbnail": "",
+		"code": "abc456",
+		"stock": 15,
+		"status": "true",
+		"category": "celulares",
+		"id": 2
+	},
+	{
+		"title": "Samsung s23",
+		"description": "Celular de Samsung",
+		"price": 750,
+		"thumbnail": "",
+		"code": "dfg456",
+		"stock": 40,
+		"status": "true",
+		"category": "celulares",
+		"id": 3
+	},
+	{
+		"title": "Moto G23",
+		"description": "Celular de Motorola",
+		"price": 650,
+		"thumbnail": "",
+		"code": "dfg123",
+		"stock": 51,
+		"status": "true",
+		"category": "celulares",
+		"id": 4
+	},
+	{
+		"title": "Moto G13",
+		"description": "Celular de Motorola",
+		"price": 550,
+		"thumbnail": "",
+		"code": "dft923",
+		"stock": 46,
+		"status": "true",
+		"category": "celulares",
+		"id": 5
+	},
+	{
+		"title": "Iphone 13",
+		"description": "Celular de Apple",
+		"price": 1000,
+		"thumbnail": "",
+		"code": "df34r3",
+		"stock": 25,
+		"status": "true",
+		"category": "celulares",
+		"id": 6
+	},
+	{
+		"title": "Iphone 15 Pro Max",
+		"description": "Super ultra celular de Apple",
+		"price": 1500,
+		"thumbnail": "",
+		"code": "dy64r3",
+		"stock": 25,
+		"status": "true",
+		"category": "celulares",
+		"id": 7
+	},
+	{
+		"title": "Macbook Air",
+		"description": "Macbook de Apple",
+		"price": 1850,
+		"thumbnail": "",
+		"code": "df4r3",
+		"stock": 9,
+		"status": "true",
+		"category": "Notebook",
+		"id": 8
+	},
+	{
+		"title": "Samsung Galaxy Book3 Pro 14",
+		"description": "Notebook de Samsung",
+		"price": 1850,
+		"thumbnail": "",
+		"code": "de5tr3",
+		"stock": 12,
+		"status": "true",
+		"category": "Notebook",
+		"id": 9
+	},
+	{
+		"title": "Lenovo Tab P12 Pro",
+		"description": "Tablet de Lenovo",
+		"price": 1050,
+		"thumbnail": "",
+		"code": "w25tr3",
+		"stock": 16,
+		"status": "true",
+		"category": "Tablet",
+		"id": 10
 	}
 ]
