@@ -47,12 +47,12 @@ router.post('/', async (req, res) => {//Crea un producto
 
     const product = req.body;
 
-    const products = await productManagerFile.createProduct(product);
+    await productManagerFile.createProduct(product);
 
     res.send({
         status:"success",
         msg:"Producto creado",
-        producto: products
+        producto: product
     })
 });
 
@@ -77,10 +77,13 @@ router.put('/:pid', async (req, res) => {//Actualiza un producto por id
 router.delete('/:pid', async (req, res) => { //Borra un producto por id 
     try {
         const pid = req.params.pid;
+        const product = await productManagerFile.getProductById(pid);
+        const productTitle = product.title;
         await productManagerFile.deleteProduct(pid);
         res.send({
             status: "success",
             msg: `Ruta DELETE de PRODUCTS con ID: ${pid}`,
+            producto: productTitle
         });
     } catch (error) {
         console.error("Error al eliminar el producto:", error);
