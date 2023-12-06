@@ -7,25 +7,67 @@ class ProductManagerFile {
       this.path = path.join(__dirname,`/files/${pathFile}`);
     }
 
-  async initializeId() {//inicializa el id de los productos en 1
+    initializeId = async () => {//inicializa el id del producto a crear
       try {
-          const products = await this.getProducts();//obtiene todos los productos del archivo json
-
-          if (products.length === 0) {//si el array de productos está vacío inicializa el id en 1
-              fs.promises.writeFile(this.path, JSON.stringify([], null, "\t"));
+          let products = await this.readProducts();
+          if (products.length > 0) {
+              let maxId = Math.max(...products.map(product => product.id));
+              this.id = maxId + 1;
+          } else {
+              this.id = 1;
           }
       } catch (error) {
-          console.error(error);
+          console.error("Error initializing ID:", error.message);
       }
   }
 
-  async addProduct(product) {
+  addProduct = async(title, description, price, thumbnail, code, stock, status, category) => { //Agrega un producto al archivo json 
     try {
-        let products = await this.getProducts(); // obtén los productos actuales
-        products.push(product); // agrega el nuevo producto
-        await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t")); // escribe los productos de vuelta al archivo
-    } catch (err) {
-        console.error(err);
+        if (typeof this.id === 'undefined') {
+            await this.initializeId();
+        }
+
+        let products = await this.readProducts();
+
+        let existingProduct = products.find(product => product.code === code);
+        if (existingProduct) {
+            console.log('Not found: Ya existe un producto con el mismo código');
+            return;
+        }
+
+        let newProduct = {
+          title,
+          description,
+          price,
+          thumbnail,
+          code,
+          stock,
+          status,
+          category,
+          id: this.id++
+        };
+
+        products.push(newProduct);
+
+        await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
+
+        return "Producto Agregado ";
+    } catch (error) {
+        console.error("Error adding product:", error.message);
+        return "Error al agregar producto";
+    }
+}
+
+  readProducts = async () => {//lee el archivo json y devuelve un array de productos
+    try {
+        let data = await fs.promises.readFile(this.path, 'utf-8');
+        let products = JSON.parse(data);
+
+        return Array.isArray(products) ? products : [];
+        
+    } catch (error) {
+        console.error("Error reading file:", error.message);
+        return [];
     }
   }
 
@@ -64,10 +106,7 @@ async createProduct(product) {
 
       products.push(product);//agrega el producto al array de productos
 
-      await fs.promises.writeFile(//escribe el array de productos en el archivo json
-        this.path,
-        JSON.stringify(products, null, "\t")
-      );
+      await fs.promises.writeFile(this.path,JSON.stringify(products, null, "\t"));
 
       return products;
     }

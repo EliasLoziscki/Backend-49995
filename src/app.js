@@ -45,7 +45,7 @@ socketServer.on("connection", (socket) => {
     socket.on('addProduct', async (productData) => {
         try {
             console.log('Datos del producto recibidos en el servidor:', productData);
-    
+            
             const productManagerFile = new ProductManagerFile('products.json');
             await productManagerFile.initializeId();
             await productManagerFile.addProduct(productData.title, productData.description, productData.price, productData.thumbnail, productData.code, productData.stock, productData.status, productData.category);

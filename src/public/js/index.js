@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     socketClient.on('newProduct', (productData) => {
         console.log('Nuevo producto agregado en tiempo real:', productData);
         const listItem = document.createElement('li');
-        listItem.textContent += `Nombre: ${productData.title}, Precio: ${productData.price}, Descripción: ${productData.description}, Thumbnail: ${productData.thumbnail}, Código: ${productData.code}, Estado: ${productData.status}, Categoría: ${productData.category}`;
+        listItem.textContent += `${productData.title} - $${productData.price} - Stock: ${productData.stock} - Code: ${productData.code}`;
         productList.appendChild(listItem);
     });
 });
