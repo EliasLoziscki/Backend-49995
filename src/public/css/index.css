@@ -1,0 +1,43 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: rgb(54, 54, 54);
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #d1d3d6;
+    margin: 20px;
+}
+
+form#addProductForm {
+    display: flex;
+    flex-direction: column;
+    justify-content:right;
+    gap: 5px;
+    width: 300px;
+    margin: 0;
+}
+
+form#addProductForm label {
+    font-weight: bold;
+}
+
+form#addProductForm input {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+form#addProductForm button {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+}

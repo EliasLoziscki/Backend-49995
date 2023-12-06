@@ -29,20 +29,10 @@ app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
 app.use("/realtimeproducts", viewRouter)
 
-// Se instalará y correrá el servidor en el puerto indicado.
-// El servidor debe levantarse sin problema.
-// Se abrirá la ruta raíz
-// Debe visualizarse el contenido de la vista index.handlebars
-// No se debe activar el websocket aún.
-// Se buscará en la url del navegador la ruta “/realtimeproducts”.
-// Se corroborará que el servidor haya conectado con el cliente, en la consola del servidor deberá mostrarse un mensaje de “cliente conectado”.
-// Se debe mostrar la lista de productos y se corroborará que se esté enviando desde websocket.
-
-
 socketServer.on("connection", (socket) => {
-    console.log("Nuevo cliente conectado con ID:",socket.id);
+    console.log("Cliente conectado");
 
-    socket.on('addProduct', async (productData) => {
+    socket.on('addProduct', async (productData) => {//Recibe los datos del producto desde el cliente y los agrega al archivo json
         try {
             console.log('Datos del producto recibidos en el servidor:', productData);
             

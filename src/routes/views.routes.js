@@ -8,7 +8,7 @@ const productManagerFile = new ProductManagerFile(path);
 router.get('/', async (req, res) => {// Obtiene todos los productos
     try {
         let products = await productManagerFile.getProducts();
-        res.render("home", { products });
+        res.render("home", { products, style:"index" });
     } catch (error) {
         console.error("Error al obtener productos:", error);
         res.send({
@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {// Obtiene todos los productos
 router.get('/realtimeproducts', async (req, res) => {
     try {
         let products = await productManagerFile.getProducts();
-        res.render('realtimeproducts', { products });
+        res.render('realtimeproducts', { products, style:"index" });
     } catch (error) {
         console.error("Error al obtener productos en tiempo real:", error);
         res.send({
