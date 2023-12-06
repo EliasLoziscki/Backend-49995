@@ -1,0 +1,15 @@
+{{!-- Crear una lista "home.handlebars" la cual contenga una lista de todos los productos agregados hasta el momento en products.json --}}
+<div>
+
+    <h1>Lista de productos</h1>
+
+    <div>
+        {{#each products}}
+            <p>{{this.title}} - ${{this.price}} - Stock {{this.stock}}</p>
+        {{/each}}
+    </div>
+
+</div>
+
+
+

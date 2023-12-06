@@ -4,9 +4,30 @@ import __dirname from "../utils.js";
 
 class ProductManagerFile {
     constructor(pathFile) {
-        this.path = path.join(__dirname,`/files/${pathFile}`)
+      this.path = path.join(__dirname,`/files/${pathFile}`);
     }
 
+  async initializeId() {//inicializa el id de los productos en 1
+      try {
+          const products = await this.getProducts();//obtiene todos los productos del archivo json
+
+          if (products.length === 0) {//si el array de productos está vacío inicializa el id en 1
+              fs.promises.writeFile(this.path, JSON.stringify([], null, "\t"));
+          }
+      } catch (error) {
+          console.error(error);
+      }
+  }
+
+  async addProduct(product) {
+    try {
+        let products = await this.getProducts(); // obtén los productos actuales
+        products.push(product); // agrega el nuevo producto
+        await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t")); // escribe los productos de vuelta al archivo
+    } catch (err) {
+        console.error(err);
+    }
+  }
 
   async getProducts() {//obtiene todos los productos del archivo json
     try {
