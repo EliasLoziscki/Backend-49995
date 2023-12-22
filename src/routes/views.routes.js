@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { ProductManagerFile } from '../managers/ProductManagerFile.js'; // Importar el manager de productos que vamos a usar en las rutas 
+import { ProductManagerFile } from '../dao/managers/ProductManagerFile.js'; // Importar el manager de productos que vamos a usar en las rutas 
 
 const path = 'products.json';
 const router = Router();

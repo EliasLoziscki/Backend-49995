@@ -1,15 +1,15 @@
-import { Router } from 'express';
-import {CartManagerFile} from '../dao/managers/CartManagerFile.js';
+import express from 'express';
+import MongoCartManager from '../dao/mongoManagers/MongoCartManager.js';
 
-const path = 'carts.json';
-const router = Router();
-const cartManagerFile = new CartManagerFile(path);
+const router = express.Router();
+const cartManager = new MongoCartManager();
+
 
 router.post('/', async (req, res) => {//Crea un carrito vacío y lo agrega al archivo carts.json
 
     const cart = req.body;
 
-    const carts = await cartManagerFile.createCart(cart);
+    const carts = await cartManager.createCart(cart);
 
     res.send({
         status:"success",
@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {//Crea un carrito vacío y lo agrega al ar
 
 
 router.get('/', async (req, res) => {//Obtiene todos los productos del carrito
-        let carts = await cartManagerFile.getCart();
+        let carts = await cartManager.getCart();
 
         res.send({
             status:"success",
@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {//Obtiene todos los productos del carrito
 router.get('/:cid', async (req, res) => {//La ruta lista los productos que pertenezcan al carrito con el parámetro cid proporcionado
     try {
         const cid = req.params.cid;
-        const cart = await cartManagerFile.getCartProducts(cid);
+        const cart = await cartManager.getCartProducts(cid);
         res.send({
             status: "success",
             msg: `Ruta GET ID CART con ID: ${cid}`,
@@ -54,7 +54,7 @@ router.post('/:cid/product/:pid', async (req, res) => {//esta ruta deberá agreg
         const cid = req.params.cid;
         const pid = req.params.pid;
         const quantity = req.body.quantity;
-        const cart = await cartManagerFile.addProductToCart(cid, pid, quantity);
+        const cart = await cartManager.addProductToCart(cid, pid, quantity);
         res.send({
             status: "success",
             msg: `Ruta POST ID CART con ID: ${cid} y ID PRODUCTO con ID: ${pid}`,
@@ -69,6 +69,4 @@ router.post('/:cid/product/:pid', async (req, res) => {//esta ruta deberá agreg
     }
 }); 
 
-
-
-export { router as cartRouter } // Exportar el router para usarlo en app.js
+export { router as MongoCartRouter}

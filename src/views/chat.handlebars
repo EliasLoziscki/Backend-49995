@@ -1,0 +1,25 @@
+{{!-- {user:correoDeUsuario, message:mensaje de usuario} --}}
+{{!-- // Aspectos a incluir:
+// agregar el modelo de persistencia de Mongo a mongoose a tu proyecto
+// Crear una base de datos llamada "e-commerce" dentro de tu Atlas, crear sus colecciones "carts", "messages", "products" y sus respectivos schemas.
+// Separar los Managers de fileSystem de los managers de MongoDb en una sola carpeta "dao". Dentro de dao, agregar también una carpeta "models" donde vivirán los esquemas de MongoDB. La estructura deberá ser igual a la vista en esta clase.
+// Contener todos los Managers (fileSystem y DB) en una carpeta llamada "Dao"
+//Reajustar los servicios con el fin de que puedan funcionar con Mongoose en lugar de FileSystem
+//NO ELIMINAR FileSystem de tu proyecto
+//Implementar una vista nueva en handlebars llamada chat.handlebars, la cual permita implementar un chat como el visto en clase. Los mensajes deberán guardarse en una colección "messages" en mongo (no es necesario implementar FileSystem) El formato es: {user:correoDeUsuario, message:mensaje de usuario}
+//Corroborar la integridad del proyecto para que todo funcione como ha hecho hasta ahora. --}}
+
+<div>
+    <h2>Chat</h2>
+    <ul id="messages-list">
+        {{#each messages}}
+        <p>{{this.user}}: {{this.message}}</p>
+        {{/each}}
+    </ul>
+</div>
+
+<form id="chatForm">
+    <input type="text" id="message" name="message" required>
+    <button type="submit">Enviar</button>
+</form>
+

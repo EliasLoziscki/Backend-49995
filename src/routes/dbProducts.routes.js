@@ -1,13 +1,12 @@
-import { Router } from 'express';
-import {ProductManagerFile} from '../dao/managers/ProductManagerFile.js'; // Importar el manager de productos que vamos a usar en las rutas 
+import express from 'express';
+import MongoProductManager from '../dao/mongoManagers/MongoProductManager.js';
 
-const path = 'products.json';
-const router = Router();
-const productManagerFile = new ProductManagerFile(path);
+const router = express.Router();
+const productManager = new MongoProductManager();
 
 router.get('/', async (req, res) => {// Obtiene todos los productos
     try {
-        let products = await productManagerFile.getProducts();
+        let products = await productManager.getProducts();
 
         const limit = parseInt(req.query.limit, 10);//limita la cantidad de productos a mostrar en la respuesta 
 
@@ -28,7 +27,7 @@ router.get('/', async (req, res) => {// Obtiene todos los productos
 router.get('/:pid', async (req, res) => {// Obtiene un producto por id
     const pid = req.params.pid;
     try {
-        const product = await productManagerFile.getProductById(pid);
+        const product = await productManager.getProductById(pid);
         res.send({
             status: "success",
             msg: `Ruta GET ID PRODUCTS con ID: ${pid}`,
@@ -47,7 +46,7 @@ router.post('/', async (req, res) => {//Crea un producto
 
     const product = req.body;
 
-    await productManagerFile.createProduct(product);
+    await productManager.createProduct(product);
 
     res.send({
         status:"success",
@@ -60,7 +59,7 @@ router.put('/:pid', async (req, res) => {//Actualiza un producto por id
     try {
         const pid = req.params.pid;
         const updatedProduct = req.body;
-        await productManagerFile.updateProduct(pid, updatedProduct);
+        await productManager.updateProduct(pid, updatedProduct);
         res.send({
             status: "success",
             msg: `Ruta PUT de PRODUCTS con ID: ${pid}`,
@@ -77,9 +76,9 @@ router.put('/:pid', async (req, res) => {//Actualiza un producto por id
 router.delete('/:pid', async (req, res) => { //Borra un producto por id 
     try {
         const pid = req.params.pid;
-        const product = await productManagerFile.getProductById(pid);
+        const product = await productManager.getProductById(pid);
         const productTitle = product.title;
-        await productManagerFile.deleteProduct(pid);
+        await productManager.deleteProduct(pid);
         res.send({
             status: "success",
             msg: `Ruta DELETE de PRODUCTS con ID: ${pid}`,
@@ -94,4 +93,4 @@ router.delete('/:pid', async (req, res) => { //Borra un producto por id
     }
 });
 
-export {router as productRouter}// Exportar el router para usarlo en app.js
+export { router as MongoProductRouter}
