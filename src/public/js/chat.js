@@ -22,7 +22,7 @@ chatInput.addEventListener("keyup", (ev)=>{
     if(ev.key === "Enter"){
         const inputMessage = chatInput.value;
         if(inputMessage.trim().length > 0){
-            socket.emit("chat-message", {username, message: inputMessage});
+            socket.emit("chat-message", {email, message: inputMessage});
             chatInput.value = "";
         }
     }
@@ -34,14 +34,14 @@ socket.on("messages", (data)=>{
     let messages = "";
 
     data.forEach((m) => {
-        messages += `<b>${m.username}:</b>${m.message}</br>`
+        messages += `<b>${m.email}:</b>${m.message}</br>`
     });
     messagesPanel.innerHTML = messages;
 })
 
-socket.on("new-user",(username)=>{
+socket.on("new-user",(email)=>{
     Swal.fire({
-        title: `${username} se ha unido al chat`,
+        title: `${email} se ha unido al chat`,
         toast: true,
         position:"top-end"
     })

@@ -10,6 +10,7 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
+    console.log(req.body);
     const { email, message } = req.body;
     await mongoMessageManager.createMessage(email, message);
     res.redirect('/');
