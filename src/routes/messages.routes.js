@@ -5,15 +5,21 @@ const router = Router();
 const mongoMessageManager = new MongoMessageManager();
 
 router.get('/', async (req, res) => {
-    const messages = await mongoMessageManager.getMessages();
-    res.render('chat', { messages });
+    const message = await mongoMessageManager.getMessages();
+    console.log("message: ", message);
+    res.render('chat', { message });
 });
 
 router.post('/', async (req, res) => {
-    console.log(req.body);
-    const { email, message } = req.body;
-    await mongoMessageManager.createMessage(email, message);
-    res.redirect('/');
+    try {
+        const { email, message } = req.body;
+        await mongoMessageManager.createMessage(email, message);
+        res.redirect('/');
+    } catch (error) {
+        console.error("Error creando mensaje:", error);
+        res.status(400).send({ error: error.toString() });
+    }
 });
+
 
 export { router as messageRouter };

@@ -10,6 +10,7 @@ import { messageRouter } from './routes/messages.routes.js';
 import { ProductManagerFile } from './dao/managers/ProductManagerFile.js';
 import { MongoProductRouter } from "./routes/dbProducts.routes.js";
 import { MongoCartRouter } from "./routes/dbCarts.routes.js";
+import  MongoMessageManager  from "./dao/mongoManagers/MongoMessageManager.js";
 
 const PORT = 8080;
 let messages = [];
@@ -39,8 +40,11 @@ app.use("/chat", messageRouter)
 app.use("/api/products", MongoProductRouter)
 app.use("/api/carts", MongoCartRouter)
 
+const mongoMessageManager = new MongoMessageManager();
+
 io.on("connection", (socket) => {
     console.log("Cliente conectado");
+    
 
     socket.on('addProduct', async (productData) => {//Recibe los datos del producto desde el cliente y los agrega al archivo json
         try {
@@ -55,13 +59,23 @@ io.on("connection", (socket) => {
             console.error('Error al agregar producto:', error.message);
         }
     });
-    socket.on("chat-message", (data)=>{
+    socket.on("chat-message", async (data)=>{
         messages.push(data);
         io.emit("messages", messages);
+        try {
+            await mongoMessageManager.createMessage(data.email, data.message);
+        } catch (error) {
+            console.error('Error al guardar el mensaje en la base de datos:', error.message);
+        }
     })
 
-    socket.on("new-user", (username)=>{
-        socket.emit("messages",messages);
-        socket.broadcast.emit("new-user", username);
+    socket.on("new-user", async (email)=>{
+        socket.broadcast.emit("new-user", email);
+        try {
+            const messages = await mongoMessageManager.getMessages();
+            socket.emit("messages", messages);
+        } catch (error) {
+            console.error('Error al obtener los mensajes de la base de datos:', error.message);
+        }
     })
 });

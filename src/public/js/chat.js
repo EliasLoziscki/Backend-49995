@@ -1,6 +1,6 @@
 const socket = io();
 
-let username;
+let email;
 
 Swal.fire({
     title: "Identifícate",
@@ -13,6 +13,9 @@ Swal.fire({
 }).then((result)=>{
     email = result.value;
     socket.emit("new-user", email);
+    console.log("email: ", email);
+    const usernameDisplay = document.getElementById('user-email-display');
+    usernameDisplay.textContent = "Bienvenido " + email;
 })
 
 const chatInput = document.getElementById("chat-input");
@@ -24,6 +27,7 @@ chatInput.addEventListener("keyup", (ev)=>{
         if(inputMessage.trim().length > 0){
             socket.emit("chat-message", {email, message: inputMessage});
             chatInput.value = "";
+            console.log("inputMessage: ", inputMessage);
         }
     }
 })
@@ -31,12 +35,12 @@ chatInput.addEventListener("keyup", (ev)=>{
 const messagesPanel = document.getElementById("messages-panel");
 
 socket.on("messages", (data)=>{
-    let messages = "";
+    let message = "";
 
     data.forEach((m) => {
-        messages += `<b>${m.email}:</b>${m.message}</br>`
+        message += `<b>${m.email}:</b>${m.message}</br>`
     });
-    messagesPanel.innerHTML = messages;
+    messagesPanel.innerHTML = message;
 })
 
 socket.on("new-user",(email)=>{
