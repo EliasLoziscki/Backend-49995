@@ -2,7 +2,7 @@ import express from 'express';
 import MongoCartManager from '../dao/mongoManagers/MongoCartManager.js';
 
 const router = express.Router();
-const cartManager = new MongoCartManager();
+let cartManager = new MongoCartManager();
 
 
 router.post('/', async (req, res) => {//Crea un carrito vacío y lo agrega al archivo carts.json

@@ -1,46 +1,9 @@
-const mongoose = require('mongoose');
-
-const ProductSchema = new mongoose.Schema({
-    title: { 
-        type: String,
-        required: true
-    },
-    description: {
-        type: String, 
-        required: true
-    },
-    price: {
-        type: Number, 
-        required: true
-    },
-    thumbnail: {
-        type: String, 
-        required: false
-    },
-    code: {
-        type: String, 
-        required: true
-    },
-    stock: {
-        type: Number, 
-        required: true
-    },
-    status: {
-        type: String, 
-        required: true
-    },
-    category: {
-        type: String, 
-        required: true
-    }
-});
-
-const Product = mongoose.model('Product', ProductSchema);
+import productModel from '../models/products.model.js';
 
 class MongoProductManager {
     async getProducts() {
         try {
-        const products = await Product.find();
+        const products = await productModel.find();
         return products;
         } catch (err) {
         console.error(err);
@@ -50,7 +13,7 @@ class MongoProductManager {
 
     async createProduct(product) {
         try {
-        const newProduct = new Product(product);
+        const newProduct = new productModel(product);
         await newProduct.save();
         return "Producto Agregado ";
         } catch (error) {
@@ -61,7 +24,7 @@ class MongoProductManager {
 
     async getProductById(productId) {
         try {
-        const product = await Product.findById(productId);
+        const product = await productModel.findById(productId);
         return product;
         } catch (error) {
         console.error("Error getting product:", error.message);
@@ -71,7 +34,7 @@ class MongoProductManager {
 
     async updateProduct(id, updateProduct) {
         try {
-        const product = await Product.findByIdAndUpdate(id, updateProduct, { new: true });
+        const product = await productModel.findByIdAndUpdate(id, updateProduct, { new: true });
         return product ? "Producto actualizado correctamente." : "Product not found";
         } catch (error) {
         console.error("Error updating product:", error.message);
@@ -81,7 +44,7 @@ class MongoProductManager {
 
     async deleteProduct(productId) {
         try {
-        const product = await Product.findByIdAndRemove(productId);
+        const product = await productModel.findByIdAndRemove(productId);
         return product ? "Eliminación del producto exitosamente." : "Product not found";
         } catch (err) {
         console.error("Error deleting product:", err.message);
@@ -90,4 +53,4 @@ class MongoProductManager {
     }
 }
 
-export { MongoProductManager };
+export default MongoProductManager;

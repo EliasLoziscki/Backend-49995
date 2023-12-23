@@ -1,52 +1,57 @@
-const mongoose = require('mongoose');
-
-const CartSchema = new mongoose.Schema({
-    products: Array
-});
-
-const Cart = mongoose.model('Cart', CartSchema);
+import cartModel from '../models/carts.model.js';
+import productModel from '../models/products.model.js';
 
 class MongoCartManager {
-    async getCart() {
-        try {
-        const carts = await Cart.find();
+
+    getCart = async () => {
+        const carts = await cartModel.find()
         return carts;
-        } catch (err) {
-        console.error(err);
-        return [];
-        }
     }
 
-    async createCart() {
-        try {
-        const newCart = new Cart({ products: [] });
-        await newCart.save();
-        return newCart;
-        } catch (error) {
-        console.error("Error al crear el carrito:", error);
-        }
-    }
-
-    async getCartProducts(cid) {
-        try {
-        const cart = await Cart.findById(cid);
-        return cart ? cart.products : null;
-        } catch (error) {
-        console.error("Error al obtener los productos del carrito:", error);
-        }
-    }
-
-    async addProductToCart(cid, pid, quantity) {
-        try {
-        const cart = await Cart.findById(cid);
-        if (!cart) return null;
-        cart.products.push({ productId: pid, quantity: quantity });
-        await cart.save();
+    getCartByID = async (cid) => {
+        const cart = await cartModel.find({_id:cid})
         return cart;
-        } catch (error) {
-        console.error("Error al agregar el producto al carrito:", error);
+    }
+
+    createCart = async () => {
+        const cart = await cartModel.create();
+        return cart;
+    }
+
+    addProductToCart = async (cid, pid, quantity = 1) => {
+        const cart = await cartModel.findOne({_id:cid});
+        if (!cart){
+            return {
+                status: "error",
+                msg: `El carrito con el id ${cid} no existe`
+            } 
+        };
+        const product = await productModel.findOne({_id:pid});
+        if (!product){
+            return {
+                status: "error",
+                msg: `El producto con el id ${pid} no existe`
+            } 
+        };
+        let productsInCart = cart.product;
+        
+        const indexProduct = productsInCart.findIndex((product)=> product.product == pid );
+
+        if(indexProduct == -1){
+            const newProduct = {
+                product: pid,
+                quantity: quantity
+            }
+            cart.product.push(newProduct);
+        }else{
+            cart.product[indexProduct].quantity += quantity;
         }
+
+        await cart.save();
+        
+        return cart;
+    
     }
 }
 
-export { MongoCartManager }
+export default MongoCartManager;

@@ -8,10 +8,11 @@ import { cartRouter } from './routes/carts.routes.js';
 import { productRouter } from './routes/products.routes.js';
 import { messageRouter } from './routes/messages.routes.js';
 import { ProductManagerFile } from './dao/managers/ProductManagerFile.js';
-import { MongoCartManager } from "./dao/mongoManagers/MongoCartManager.js";
-import { MongoProductManager } from "./dao/mongoManagers/MongoProductManager.js";
+import { MongoProductRouter } from "./routes/dbProducts.routes.js";
+import { MongoCartRouter } from "./routes/dbCarts.routes.js";
 
 const PORT = 8080;
+let messages = [];
 const app = express();
 
 const MONGO = "mongodb+srv://waloz87:ASVmPWp4oZdPUTc2@cluster0.tul15f7.mongodb.net/ecommerce"
@@ -31,10 +32,12 @@ app.set("views", `${__dirname}/views`);
 app.use(express.static(`${__dirname}/public`));//Para poder usar los archivos estáticos de la carpeta public (css y js)
 
 app.use("/", viewRouter)
-app.use('/api/products', productRouter);
-app.use('/api/carts', cartRouter);
+// app.use('/api/products', productRouter);
+// app.use('/api/carts', cartRouter);
 app.use("/realtimeproducts", viewRouter)
 app.use("/chat", messageRouter)
+app.use("/api/products", MongoProductRouter)
+app.use("/api/carts", MongoCartRouter)
 
 io.on("connection", (socket) => {
     console.log("Cliente conectado");
@@ -52,8 +55,13 @@ io.on("connection", (socket) => {
             console.error('Error al agregar producto:', error.message);
         }
     });
-    socket.on('chat message', (msg) => {
-        console.log('Mensaje recibido:', msg);
-        io.emit('chat message', msg);
-    });
+    socket.on("chat-message", (data)=>{
+        messages.push(data);
+        io.emit("messages", messages);
+    })
+
+    socket.on("new-user", (username)=>{
+        socket.emit("messages",messages);
+        socket.broadcast.emit("new-user", username);
+    })
 });
