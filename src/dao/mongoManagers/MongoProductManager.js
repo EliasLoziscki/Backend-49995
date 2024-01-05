@@ -1,6 +1,7 @@
 import productModel from '../models/products.model.js';
 
 class MongoProductManager {
+    
     async getProducts() {
         try {
         const products = await productModel.find();
@@ -44,11 +45,11 @@ class MongoProductManager {
 
     async deleteProduct(productId) {
         try {
-        const product = await productModel.findByIdAndRemove(productId);
-        return product ? "Eliminación del producto exitosamente." : "Product not found";
+            const product = await productModel.findByIdAndDelete(productId);
+            return product ? "Eliminación del producto exitosamente." : "Product not found";
         } catch (err) {
-        console.error("Error deleting product:", err.message);
-        return err;
+            console.error("Error deleting product:", err.message);
+            return err;
         }
     }
 }

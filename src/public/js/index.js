@@ -37,3 +37,15 @@ document.addEventListener('DOMContentLoaded', () => {
         productList.appendChild(listItem);
     });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.category-button').forEach(button => {
+        button.addEventListener('click', async () => {
+            const category = button.getAttribute('data-category');
+            console.log(`Button clicked: ${category}`);
+            const response = await fetch(`/api/products?category=${category}`);
+            const products = await response.json();
+            // Ahora puedes usar 'products' para actualizar tu interfaz de usuario
+        });
+    });
+});

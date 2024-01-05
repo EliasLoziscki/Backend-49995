@@ -37,8 +37,8 @@ app.use("/", viewRouter)
 // app.use('/api/carts', cartRouter);
 app.use("/realtimeproducts", viewRouter)
 app.use("/chat", messageRouter)
-app.use("/api/products", MongoProductRouter)
-app.use("/api/carts", MongoCartRouter)
+app.use("/products", MongoProductRouter)
+app.use("/carts", MongoCartRouter)
 
 const mongoMessageManager = new MongoMessageManager();
 
