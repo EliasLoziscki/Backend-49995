@@ -4,13 +4,14 @@ import { engine } from "express-handlebars";
 import viewRouter from "./routes/views.routes.js";
 import __dirname from "./utils.js"; 
 import { Server } from "socket.io";
-import { cartRouter } from './routes/carts.routes.js';
-import { productRouter } from './routes/products.routes.js';
 import { messageRouter } from './routes/messages.routes.js';
-import { ProductManagerFile } from './dao/managers/ProductManagerFile.js';
 import { MongoProductRouter } from "./routes/dbProducts.routes.js";
 import { MongoCartRouter } from "./routes/dbCarts.routes.js";
 import  MongoMessageManager  from "./dao/mongoManagers/MongoMessageManager.js";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import sessionRouter from "./routes/sessions.routes.js";
+import perfilRouter from "./routes/perfil.routes.js";
 
 const PORT = 8080;
 let messages = [];
@@ -33,12 +34,22 @@ app.set("views", `${__dirname}/views`);
 app.use(express.static(`${__dirname}/public`));//Para poder usar los archivos estáticos de la carpeta public (css y js)
 
 app.use("/", viewRouter)
-// app.use('/api/products', productRouter);
-// app.use('/api/carts', cartRouter);
 app.use("/realtimeproducts", viewRouter)
 app.use("/chat", messageRouter)
 app.use("/products", MongoProductRouter)
 app.use("/carts", MongoCartRouter)
+app.use(session({
+    store: new MongoStore({ 
+        mongoUrl: MONGO,
+        ttl: 3600
+    }),
+    secret: "CoderSecret",
+    resave: false,
+    saveUninitialized: false
+}));
+app.use("/perfil", perfilRouter)
+app.use("/api/sessions", sessionRouter)
+
 
 const mongoMessageManager = new MongoMessageManager();
 
