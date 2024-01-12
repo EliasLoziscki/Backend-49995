@@ -4,14 +4,11 @@ import { engine } from "express-handlebars";
 import viewRouter from "./routes/views.routes.js";
 import __dirname from "./utils.js"; 
 import { Server } from "socket.io";
-import { messageRouter } from './routes/messages.routes.js';
-import { MongoProductRouter } from "./routes/dbProducts.routes.js";
-import { MongoCartRouter } from "./routes/dbCarts.routes.js";
 import  MongoMessageManager  from "./dao/mongoManagers/MongoMessageManager.js";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import sessionRouter from "./routes/sessions.routes.js";
-import perfilRouter from "./routes/perfil.routes.js";
+import productModel from "./dao/models/products.model.js";
 
 const PORT = 8080;
 let messages = [];
@@ -25,19 +22,6 @@ app.use(express.urlencoded({extended:true}))
 
 const httpServer = app.listen(PORT, ()=> console.log(`Servidor funcionando en el puerto: ${PORT}`)); //Se crea el servidor http con express y se lo asigna a una constante para poder usarlo en el socket server
 
-const io = new Server(httpServer);
-
-app.engine("handlebars", engine());//handlebars como template engine para las vistas html
-app.set("view engine", "handlebars");
-app.set("views", `${__dirname}/views`);
-
-app.use(express.static(`${__dirname}/public`));//Para poder usar los archivos estáticos de la carpeta public (css y js)
-
-app.use("/", viewRouter)
-app.use("/realtimeproducts", viewRouter)
-app.use("/chat", messageRouter)
-app.use("/products", MongoProductRouter)
-app.use("/carts", MongoCartRouter)
 app.use(session({
     store: new MongoStore({ 
         mongoUrl: MONGO,
@@ -47,7 +31,16 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
-app.use("/perfil", perfilRouter)
+
+const io = new Server(httpServer);
+
+app.engine("handlebars", engine());//handlebars como template engine para las vistas html
+app.set("view engine", "handlebars");
+app.set("views", `${__dirname}/views`);
+
+app.use(express.static(`${__dirname}/public`));//Para poder usar los archivos estáticos de la carpeta public (css y js)
+
+app.use("/", viewRouter)
 app.use("/api/sessions", sessionRouter)
 
 
@@ -57,14 +50,11 @@ io.on("connection", (socket) => {
     console.log("Cliente conectado");
     
 
-    socket.on('addProduct', async (productData) => {//Recibe los datos del producto desde el cliente y los agrega al archivo json
+    socket.on('createProduct', async (productData) => {
         try {
             console.log('Datos del producto recibidos en el servidor:', productData);
-            
-            const productManagerFile = new ProductManagerFile('products.json');
-            await productManagerFile.initializeId();
-            await productManagerFile.addProduct(productData.title, productData.description, productData.price, productData.thumbnail, productData.code, productData.stock, productData.status, productData.category);
-    
+            const newProduct = new productModel(productData);
+            await newProduct.save();
             io.emit('newProduct', productData);
         } catch (error) {
             console.error('Error al agregar producto:', error.message);

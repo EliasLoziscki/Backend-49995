@@ -1,6 +1,13 @@
 
 <div>
     <h1>Products</h1>
+    <div>
+        <p>Bienvenido {{user.rol}}: {{user.full_name}}</p>
+        <p>Mail: {{user.email}}</p>
+        <p>Edad: {{user.age}}</p>
+        <a href="/api/sessions/logout"><button>Salir</button></a>
+    </div>
+
     <div class="product-card-container">
         {{#each products.docs}}
             <div class="product-card">

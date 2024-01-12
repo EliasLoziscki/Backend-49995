@@ -40,28 +40,6 @@ router.get('/', async (req, res) => {//Obtiene todos los productos del carrito
     }
 });
 
-
-
-router.get('/:cid', async (req, res) => {
-    const cid = req.params.cid;
-    try {
-        const cart = await cartManager.getCartByID(cid).populate('products.product').lean();
-        console.log(cart)
-        if (!cart) {
-            throw new Error(`No se encontró el carrito con ID: ${cid}`);
-        }
-
-        res.render('cartId', {cart, style: 'index'})
-
-    } catch (error) {
-        console.error("Error al obtener el cart:", error);
-        res.send({
-            status: "error",
-            msg: `Error al obtener el cart con ID: ${cid}`
-        });
-    }
-});
-
 router.post('/:cid/products/:pid', async (req, res) => {//La ruta agrega un producto al carrito con el parámetro cid proporcionado
     try {
         const cid = req.params.cid;

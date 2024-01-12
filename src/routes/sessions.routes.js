@@ -19,7 +19,8 @@ router.post("/register", async (req, res)=>{
         last_name,
         email,
         age,
-        password
+        password,
+        rol: "usuario"
     }
 
     let result = await userModel.create(user);
@@ -43,7 +44,8 @@ router.post("/login", async (req, res)=>{
     req.session.user = {
         full_name: `${user.first_name} ${user.last_name}`,
         email: user.email,
-        age: user.age
+        age: user.age,
+        rol: user.rol
     }
     res.send({
         status: "success",
@@ -60,7 +62,7 @@ router.get("/logout", (req, res)=>{
             error: "No se pudo cerrar la sesión"
         });
     });
-    res.redirect("/perfil/login");
+    res.redirect("/login");
 });
 
 export default router;

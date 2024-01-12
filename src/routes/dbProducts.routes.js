@@ -1,38 +1,9 @@
 import express from 'express';
 import MongoProductManager from '../dao/mongoManagers/MongoProductManager.js';
-import productModel from '../dao/models/products.model.js';
 
 const router = express.Router();
 const productManager = new MongoProductManager();
 
-router.get('/', async (req, res) => {
-    try {
-        const { page = 1, category, sort, limit = 10 } = req.query;
-
-        const query = category ? { category } : {};
-
-        const options = {
-            page,
-            limit: Number(limit),
-            lean: true,
-            leanWithId: false,
-        };
-        if (sort) {
-            options.sort = { price: sort === 'desc' ? -1 : 1 };
-        }
-
-        const products = await productModel.paginate(query, options);
-
-        res.render('products', {  products: products, limit: limit, category: category, sort: sort, style: 'index' });
-        
-    } catch (error) {
-        console.error("Error al obtener los productos:", error);
-        res.send({
-            status: "error",
-            msg: "Error al obtener los productos"
-        });
-    }
-});
 
 router.get('/:pid', async (req, res) => {// Obtiene un producto por id
     const pid = req.params.pid;

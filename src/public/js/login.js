@@ -15,7 +15,7 @@ form.addEventListener('submit', async (e) => {
         }
     }).then(result =>{
         if(result.status===200){
-            window.location.replace = ('/products');
+            window.location.replace('/products');
         }else{
             console.log(result);
         }

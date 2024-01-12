@@ -2,13 +2,7 @@ import { Router } from 'express';
 import MongoMessageManager from '../dao/mongoManagers/MongoMessageManager.js';
 
 const router = Router();
-const mongoMessageManager = new MongoMessageManager();
 
-router.get('/', async (req, res) => {
-    const message = await mongoMessageManager.getMessages();
-    console.log("message: ", message);
-    res.render('chat', { message });
-});
 
 router.post('/', async (req, res) => {
     try {

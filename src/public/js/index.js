@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const status = statusInput.value;
         const category = categoryInput.value;
   
-        socketClient.emit('addProduct', { title, price, stock, description, thumbnail, code, status, category }); 
+        socketClient.emit('createProduct', { title, price, stock, description, thumbnail, code, status, category }); 
         addProductForm.reset();
     };
 
