@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import userModel from '../dao/models/Users.models.js';
+import { createHash, validatePassword } from '../utils.js';
 
 const router = Router();
 
@@ -19,7 +20,7 @@ router.post("/register", async (req, res)=>{
         last_name,
         email,
         age,
-        password,
+        password: createHash(password),
         rol: "usuario"
     }
 
@@ -33,14 +34,25 @@ router.post("/register", async (req, res)=>{
 
 router.post("/login", async (req, res)=>{
     const { email, password } = req.body;
-    const user = await userModel.findOne({email, password});
+    const user = await userModel.findOne({ email });
     if(!user){
         return res.status(400)
         .send({
             status: "error",
-            error: "Usuario o contraseña incorrectos"
+            error: "Datos incorrectos"
         })
     }
+
+    const isValidPassword = validatePassword(password, user);
+    if(!isValidPassword){
+        return res.status(400)
+        .send({
+            status: "error",
+            error: "Datos incorrectos"
+        })
+    }
+    delete user.password; // Eliminamos la contraseña del objeto user para no enviarla en el payload de la sesión (cookie) ES UN DATO SENSIBLE
+
     req.session.user = {
         full_name: `${user.first_name} ${user.last_name}`,
         email: user.email,
