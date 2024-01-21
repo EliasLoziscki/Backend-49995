@@ -1,17 +1,11 @@
 import { Router } from 'express';
-import { ProductManagerFile } from '../dao/managers/ProductManagerFile.js'; // Importar el manager de productos que vamos a usar en las rutas 
 import MongoCartManager from '../dao/mongoManagers/MongoCartManager.js';
 import productModel from '../dao/models/products.model.js';
 import MongoMessageManager from '../dao/mongoManagers/MongoMessageManager.js';
-import MongoProductManager from '../dao/mongoManagers/MongoProductManager.js';
 
-
-const path = 'products.json';
 const router = Router();
-const productManagerFile = new ProductManagerFile(path);
 const cartManager = new MongoCartManager();
 const MessageManager = new MongoMessageManager();
-const productManager = new MongoProductManager();
 
 const publicAccess = (req, res, next)=>{
     if(req.session.user){
@@ -41,7 +35,7 @@ router.get('/', privateAccess, async (req, res) => {// Obtiene todos los product
     }
 });
 
-router.get('/realtimeproducts', async (req, res) => {
+router.get('/realtimeproducts', async (req, res) => {//Obtiene todos los productos y los muestra en la vista realtimeproducts con websockets
     try {
         const products = await productModel.find().lean();
         res.render('realtimeproducts', { products, style:"index" });
@@ -103,7 +97,6 @@ router.get('/products', privateAccess, async (req, res) => {//Obtiene todos los 
         }
 
         const products = await productModel.paginate(query, options);
-        console.log(products);
         res.render('products', {  products: products, limit: limit, category: category, sort: sort, user:req.session.user, style: 'index' });
 
     } catch (error) {
@@ -115,7 +108,7 @@ router.get('/products', privateAccess, async (req, res) => {//Obtiene todos los 
     }
 });
 
-router.get('/chat', async (req, res) => {
+router.get('/chat', async (req, res) => {//Obtiene todos los mensajes y los muestra en la vista chat
     const message = await MessageManager.getMessages();
     console.log("message: ", message);
     res.render('chat', { message });

@@ -1,36 +1,55 @@
 import { Router } from 'express';
 import userModel from '../dao/models/Users.models.js';
 import { createHash, validatePassword } from '../utils.js';
+import passport from 'passport';
 
 const router = Router();
 
-router.post("/register", async (req, res)=>{
-    const { first_name, last_name, email, age, password } = req.body;
-    const exists = await userModel.findOne({email});
+// router.post("/register", async (req, res)=>{
+//     const { first_name, last_name, email, age, password } = req.body;
+//     const exists = await userModel.findOne({email});
 
-    if(exists){
-        return res.status(400)
-        .send({
-            status: "error",
-            error: "El email ya existe"
-        })
-    }
-    const user = {
-        first_name,
-        last_name,
-        email,
-        age,
-        password: createHash(password),
-        rol: "usuario"
-    }
+//     if(exists){
+//         return res.status(400)
+//         .send({
+//             status: "error",
+//             error: "El email ya existe"
+//         })
+//     }
+//     const user = {
+//         first_name,
+//         last_name,
+//         email,
+//         age,
+//         password: createHash(password),
+//         rol: "usuario"
+//     }
 
-    let result = await userModel.create(user);
+//     let result = await userModel.create(user);
 
-    res.send({
+//     res.send({
+//         status: "success",
+//         message: "Usuario creado con éxito"
+//     })
+// });
+
+router.post("/register", passport.authenticate("register", {failureRedirect:"/api/sessions/failregister"}),
+async (req, res)=>{
+    return res.status(200)
+    .send({
         status: "success",
         message: "Usuario creado con éxito"
     })
 });
+
+router.get("/failregister", async (req, res)=>{
+    return res.status(400)
+    .send({
+        status: "error",
+        error: "Falló el registro"
+    })
+});
+
 
 router.post("/login", async (req, res)=>{
     const { email, password } = req.body;

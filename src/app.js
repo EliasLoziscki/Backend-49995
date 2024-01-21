@@ -1,14 +1,16 @@
 import express from "express";
 import mongoose from "mongoose";
 import { engine } from "express-handlebars";
+import passport from "passport";
 import viewRouter from "./routes/views.routes.js";
 import __dirname from "./utils.js"; 
 import { Server } from "socket.io";
-import  MongoMessageManager  from "./dao/mongoManagers/MongoMessageManager.js";
+import MongoMessageManager from "./dao/mongoManagers/MongoMessageManager.js";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import sessionRouter from "./routes/sessions.routes.js";
 import productModel from "./dao/models/products.model.js";
+import inicializePassport from "./config/passport.config.js";
 
 const PORT = 8080;
 let messages = [];
@@ -42,7 +44,9 @@ app.use(express.static(`${__dirname}/public`));//Para poder usar los archivos es
 
 app.use("/", viewRouter)
 app.use("/api/sessions", sessionRouter)
-
+inicializePassport()
+app.use(passport.initialize());
+app.use(passport.session());
 
 const mongoMessageManager = new MongoMessageManager();
 

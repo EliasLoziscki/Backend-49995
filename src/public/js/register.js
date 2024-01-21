@@ -13,5 +13,19 @@ form.addEventListener('submit', e => {
         headers: {
             'Content-Type': 'application/json'
         }
-    }).then(result => result.json()).then(json => console.log(json))
+    }).then(result => {
+        if(result.ok) {
+            Swal.fire({
+                title: `Te has registrado correctamente`,
+                toast: true,
+                position:"top-end"
+            });
+        } else {
+            Swal.fire({
+                title: `Datos incorrectos`,
+                toast: true,
+                position:"top-end"
+            });
+        }
+    }).then(result => result.json()).then(json => console.log(json));
 });
