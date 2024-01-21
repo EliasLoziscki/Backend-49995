@@ -114,5 +114,8 @@ router.get('/chat', async (req, res) => {//Obtiene todos los mensajes y los mues
     res.render('chat', { message });
 });
 
+router.get("/resetPassword", (req, res)=>{//Ruta para mostrar el formulario de reseteo de contraseña
+    res.render('resetPassword', {style:"index"});
+});
 
 export default router;

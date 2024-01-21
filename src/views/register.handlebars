@@ -3,23 +3,23 @@
     <form id="registerForm">
 
         <label>Nombre</label>
-        <input name="first_name">
+        <input name="first_name" type="text">
         <br>
 
         <label>Apellido</label>
-        <input name="last_name">
+        <input name="last_name" type="text">
         <br>
 
         <label>Email</label>
-        <input name="email">
+        <input name="email" type="email">
         <br>
 
         <label>Edad</label>
-        <input name="age">
+        <input name="age" type="number">
         <br>
 
         <label>Contraseña</label>
-        <input name="password" type="password">
+        <input name="password" type="password" pattern=".{6,8}" title="La contraseña debe tener entre 6 y 8 caracteres" placeholder="Mínimo 6 caracteres">   
         <br>
         <input type="submit">
     </form>

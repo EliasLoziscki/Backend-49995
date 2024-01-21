@@ -17,7 +17,12 @@ form.addEventListener('submit', async (e) => {
         if(result.status===200){
             window.location.replace('/products');
         }else{
-            console.log(result);
+            Swal.fire({
+                title: `Datos incorrectos`,
+                toast: true,
+                position:"top-end"
+            });
+            console.log(result)
         }
     })
 });

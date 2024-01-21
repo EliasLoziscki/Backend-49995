@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import userModel from '../dao/models/Users.models.js';
-import { createHash, validatePassword } from '../utils.js';
 import passport from 'passport';
+import userModel from '../dao/models/Users.models.js';
+import { createHash} from "../utils.js";
+
 
 const router = Router();
 
@@ -33,7 +34,7 @@ const router = Router();
 //     })
 // });
 
-router.post("/register", passport.authenticate("register", {failureRedirect:"/api/sessions/failregister"}),
+router.post("/register", passport.authenticate("register", {failureRedirect:"/api/sessions/failregister"}),//passport.authenticate es un método de passport que recibe como parámetro la estrategia que se va a utilizar, en este caso "register" y un objeto con las opciones de configuración, en este caso failureRedirect que redirige a la ruta /api/session/failregister si falla el registro y successRedirect que redirige a la ruta /api/session/successregister si el registro es exitoso 
 async (req, res)=>{
     return res.status(200)
     .send({
@@ -42,7 +43,7 @@ async (req, res)=>{
     })
 });
 
-router.get("/failregister", async (req, res)=>{
+router.get("/failregister", async (req, res)=>{//Si falla el registro, passport.authenticate redirige a esta ruta y envía un error 400
     return res.status(400)
     .send({
         status: "error",
@@ -50,42 +51,30 @@ router.get("/failregister", async (req, res)=>{
     })
 });
 
-
-router.post("/login", async (req, res)=>{
-    const { email, password } = req.body;
-    const user = await userModel.findOne({ email });
-    if(!user){
-        return res.status(400)
-        .send({
-            status: "error",
-            error: "Datos incorrectos"
-        })
+router.post("/login", passport.authenticate("login", {failureRedirect:'/api/session/faillogin'}),//passport.authenticate es un método de passport que recibe como parámetro la estrategia que se va a utilizar, en este caso "login" y un objeto con las opciones de configuración, en este caso failureRedirect que redirige a la ruta /api/session/faillogin si falla el login y successRedirect que redirige a la ruta /api/session/successlogin si el login es exitoso
+    async (req, res)=>{
+    if(!req.user){
+        return res.status(400).send({status:error})
     }
-
-    const isValidPassword = validatePassword(password, user);
-    if(!isValidPassword){
-        return res.status(400)
-        .send({
-            status: "error",
-            error: "Datos incorrectos"
-        })
-    }
-    delete user.password; // Eliminamos la contraseña del objeto user para no enviarla en el payload de la sesión (cookie) ES UN DATO SENSIBLE
-
     req.session.user = {
-        full_name: `${user.first_name} ${user.last_name}`,
-        email: user.email,
-        age: user.age,
-        rol: user.rol
+        first_name: req.user.first_name,
+        last_name: req.user.last_name,
+        age: req.user.age,
+        email: req.user.email,
+        rol: req.user.rol
     }
-    res.send({
-        status: "success",
-        payload: req.session.user,
-        message: "Usuario logueado con éxito"
+    res.send({status:"success", payload: req.user});
+});
+
+router.get("/faillogin", async (req, res)=>{//Si falla el login, passport.authenticate redirige a esta ruta y envía un error 400
+    return res.status(400)
+    .send({
+        status: "error",
+        error: "Falló el login"
     })
 });
 
-router.get("/logout", (req, res)=>{
+router.get("/logout", (req, res)=>{//req.session.destroy es un método de express-session que destruye la sesión del usuario y lo redirige al login
     req.session.destroy(err=>{
     if(err)
         return res.status(500).send({
@@ -95,5 +84,29 @@ router.get("/logout", (req, res)=>{
     });
     res.redirect("/login");
 });
+
+router.post("/restartPassword", async (req,res)=>{
+    const {email,password} = req.body;
+    if(!email || !password) return res.status(400).send(
+        res.send({
+            status:"error",
+            message:"Datos incorrectos"
+        })
+    )
+    const user = await userModel.findOne({email});
+    if(!user) return res.status(400).send(
+        res.send({
+            status:"error",
+            message:"No existe el usuario"
+        })
+    )
+    const newHashPassword = createHash(password);
+
+    await userModel.updateOne({_id:user._id},{$set:{password:newHashPassword}});
+    res.send({
+        status:"success",
+        message:"contraseña restaurada"
+    })
+})
 
 export default router;

@@ -22,7 +22,7 @@ form.addEventListener('submit', e => {
             });
         } else {
             Swal.fire({
-                title: `Datos incorrectos`,
+                title: `Email ya registrado`,
                 toast: true,
                 position:"top-end"
             });
