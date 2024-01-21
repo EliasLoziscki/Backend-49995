@@ -1,38 +1,9 @@
 import { Router } from 'express';
 import passport from 'passport';
 import userModel from '../dao/models/Users.models.js';
-import { createHash} from "../utils.js";
-
+import { createHash } from "../utils.js";
 
 const router = Router();
-
-// router.post("/register", async (req, res)=>{
-//     const { first_name, last_name, email, age, password } = req.body;
-//     const exists = await userModel.findOne({email});
-
-//     if(exists){
-//         return res.status(400)
-//         .send({
-//             status: "error",
-//             error: "El email ya existe"
-//         })
-//     }
-//     const user = {
-//         first_name,
-//         last_name,
-//         email,
-//         age,
-//         password: createHash(password),
-//         rol: "usuario"
-//     }
-
-//     let result = await userModel.create(user);
-
-//     res.send({
-//         status: "success",
-//         message: "Usuario creado con éxito"
-//     })
-// });
 
 router.post("/register", passport.authenticate("register", {failureRedirect:"/api/sessions/failregister"}),//passport.authenticate es un método de passport que recibe como parámetro la estrategia que se va a utilizar, en este caso "register" y un objeto con las opciones de configuración, en este caso failureRedirect que redirige a la ruta /api/session/failregister si falla el registro y successRedirect que redirige a la ruta /api/session/successregister si el registro es exitoso 
 async (req, res)=>{
@@ -59,6 +30,7 @@ router.post("/login", passport.authenticate("login", {failureRedirect:'/api/sess
     req.session.user = {
         first_name: req.user.first_name,
         last_name: req.user.last_name,
+        full_name: req.user.first_name + " " + req.user.last_name,
         age: req.user.age,
         email: req.user.email,
         rol: req.user.rol
@@ -72,6 +44,21 @@ router.get("/faillogin", async (req, res)=>{//Si falla el login, passport.authen
         status: "error",
         error: "Falló el login"
     })
+});
+
+router.get("/github", passport.authenticate("github", {scope: ["user:email"]}), async (req, res)=>{});//passport.authenticate es un método de passport que recibe como parámetro la estrategia que se va a utilizar, en este caso "github" y un objeto con las opciones de configuración, en este caso scope que es un arreglo con los permisos que se le van a dar a la aplicación en github para acceder a la información del usuario que se está logueando en la aplicación
+
+router.get("/githubcallback", passport.authenticate("github", {failureRedirect:'/login'}), async (req, res)=>{//passport.authenticate es un método de passport que recibe como parámetro la estrategia que se va a utilizar, en este caso "github" y un objeto con las opciones de configuración, en este caso failureRedirect que redirige a la ruta /login si falla el login y successRedirect que redirige a la ruta /profile si el login es exitoso
+    req.session.user = {
+        first_name: req.user.first_name,
+        last_name: req.user.last_name,
+        full_name: req.user.first_name + " " + req.user.last_name,
+        age: req.user.age,
+        email: req.user.email,
+        rol: req.user.rol
+    }
+    console.log(req.session.user)
+    res.redirect("/profile");
 });
 
 router.get("/logout", (req, res)=>{//req.session.destroy es un método de express-session que destruye la sesión del usuario y lo redirige al login

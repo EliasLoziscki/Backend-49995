@@ -24,7 +24,6 @@ const privateAccess = (req, res, next)=>{
 router.get('/', privateAccess, async (req, res) => {// Obtiene todos los productos
     try {
         const products = await productModel.find().lean();
-        console.log(products);
         res.render("home", { products, style:"index" });
     } catch (error) {
         console.error("Error al obtener productos:", error);
@@ -64,7 +63,6 @@ router.get('/carts/:cid', async (req, res) => {//Obtiene un carrito por ID y lo 
     const cid = req.params.cid;
     try {
         const cart = await cartManager.getCartByID(cid).populate('products.product').lean();
-        console.log(cart)
         if (!cart) {
             throw new Error(`No se encontró el carrito con ID: ${cid}`);
         }
@@ -110,7 +108,6 @@ router.get('/products', privateAccess, async (req, res) => {//Obtiene todos los 
 
 router.get('/chat', async (req, res) => {//Obtiene todos los mensajes y los muestra en la vista chat
     const message = await MessageManager.getMessages();
-    console.log("message: ", message);
     res.render('chat', { message });
 });
 

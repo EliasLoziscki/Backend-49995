@@ -2,6 +2,7 @@ import passport from "passport";
 import local from "passport-local";
 import userModel from "../dao/models/Users.models.js";
 import { createHash, validatePassword } from "../utils.js";
+import GitHubStrategy from "passport-github2";
 
 
 const LocalStrategy = local.Strategy;
@@ -53,6 +54,34 @@ const inicializePassport = ()=>{
             return done(error);
         }
     }));
+    
+    passport.use('github', new GitHubStrategy({
+        clientID: "Iv1.42e218e266450e8c",
+        clientSecret: "14eaa3fe4bcfceaca4c27204b08dd0c06f21eea5",
+        callbackURL: "http://localhost:8080/api/sessions/githubcallback"
+    }, async (accessToken, refreshToken, profile, done)=>{
+        try{
+            console.log(profile);
+            let user = await userModel.findOne({email: profile._json.email});
+            if(!user){//Si el usuario no existe en la base de datos, se crea uno nuevo con los datos que se obtienen de github
+                const newUser = {
+                    first_name: profile._json.name,
+                    last_name: "",
+                    email: profile._json.email,
+                    age: 18,
+                    password: "",
+                    rol: "usuario"
+                }
+                let result = await userModel.create(newUser);
+                return done(null, result);
+            }else{//Si el usuario ya existe en la base de datos, se retorna el usuario encontrado en la base de datos y se loguea
+                return done(null, user);
+            }
+            
+        }catch(error){
+            return done(error);
+        }
+    }));
 
     passport.serializeUser((user, done)=>{
         done(null, user._id);
@@ -62,6 +91,7 @@ const inicializePassport = ()=>{
         const user = await userModel.findById(id);
         done(null, user);
     });
-}
+
+};
 
 export default inicializePassport;
