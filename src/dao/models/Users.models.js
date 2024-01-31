@@ -9,20 +9,20 @@ const UserSchema = new mongoose.Schema({
     },
     last_name: {
         type:String,
-        //required: true no pudo ser requerido porque en el registro de github no se envía el apellido del usuario o por lo menos no encontré la forma de obtenerlo en el objeto que se recibe en el callback de github
+        required: true 
     },
     email: {
         type:String, 
-        unique: true
-        //required: true no pudo ser requerido porque en el registro de github no se envía el email del usuario
+        unique: true,
+        required: true
     },
     age: {
         type:Number, 
         required: true
     },
     password: {
-        type:String
-        //required: true no pudo ser requerido porque en el registro de github no se envía la contraseña del usuario
+        type:String,
+        required: true 
     },
     cart: {
         type:mongoose.Schema.Types.ObjectId,

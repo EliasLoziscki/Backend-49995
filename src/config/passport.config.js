@@ -4,6 +4,7 @@ import userModel from "../dao/models/Users.models.js";
 import { createHash, validatePassword } from "../utils.js";
 import GitHubStrategy from "passport-github2";
 import MongoCartManager from "../dao/mongoManagers/MongoCartManager.js";
+import crypto from "crypto";
 
 const LocalStrategy = local.Strategy;
 const dbCartManager = new MongoCartManager();
@@ -67,11 +68,11 @@ const inicializePassport = ()=>{
             if(!user){//Si el usuario no existe en la base de datos, se crea uno nuevo con los datos que se obtienen de github
                 const newUser = {
                     first_name: profile._json.name,
-                    last_name: "",
-                    email: profile._json.email,
+                    last_name: "@github",
+                    email: `${profile._json.login}@github.com`, //es lo único que se me ocurrió por el tema del required:true en el modelo
                     age: 18,
                     cart: await dbCartManager.createCart(),
-                    password: "",
+                    password: crypto.randomBytes(16).toString('hex'),
                     rol: "user"
                 }
                 let result = await userModel.create(newUser);
