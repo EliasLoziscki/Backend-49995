@@ -3,22 +3,22 @@ import local from "passport-local";
 import userModel from "../dao/models/Users.models.js";
 import { createHash, validatePassword } from "../utils.js";
 import GitHubStrategy from "passport-github2";
-
+import MongoCartManager from "../dao/mongoManagers/MongoCartManager.js";
 
 const LocalStrategy = local.Strategy;
+const dbCartManager = new MongoCartManager();
 
 const inicializePassport = ()=>{
 
     passport.use("register", new LocalStrategy(
         {passReqToCallback: true, usernameField: "email"},
         async (req, username, password, done)=>{
-            const { first_name, last_name, email, age } = req.body;
+        const { first_name, last_name, email, age } = req.body;
             try{
 
                 let user = await userModel.findOne({email:username});
                 if(user){
-                    console.log('Usuario ya se registro')
-                    return done(null, false);
+                    return done(null, false,{message: "Usuario ya se registro"});
                 }
 
                 const newUser = {
@@ -26,8 +26,9 @@ const inicializePassport = ()=>{
                     last_name,
                     email,
                     age,
+                    cart: await dbCartManager.createCart(),
                     password: createHash(password),
-                    rol: "usuario"
+                    rol: "user"
                 }
                 const result = await userModel.create(newUser);
                 return done(null, result);
@@ -43,10 +44,10 @@ const inicializePassport = ()=>{
         try{
             const user = await userModel.findOne({email: username});
             if(!user){
-                return done(null, false);
+                return done(null, false, {message: "Usuario no encontrado"});
             }
             if(!validatePassword(password, user)){
-                return done(null, false);
+                return done(null, false, {message: "Contraseña incorrecta"});
             }
             return done(null, user);
 
@@ -69,8 +70,9 @@ const inicializePassport = ()=>{
                     last_name: "",
                     email: profile._json.email,
                     age: 18,
+                    cart: await dbCartManager.createCart(),
                     password: "",
-                    rol: "usuario"
+                    rol: "user"
                 }
                 let result = await userModel.create(newUser);
                 return done(null, result);

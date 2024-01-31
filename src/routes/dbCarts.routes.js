@@ -40,6 +40,24 @@ router.get('/', async (req, res) => {//Obtiene todos los productos del carrito
     }
 });
 
+router.get('/:cid', async (req, res) => {//Obtiene el carrito con el parámetro cid proporcionado
+    try {
+        const cid = req.params.cid;
+        const cart = await cartManager.getCartByID({ _id:cid });
+        res.send({
+            status: "success",
+            msg: `Ruta GET ID CART con ID: ${cid}`,
+            producto: cart
+        });
+    } catch (error) {
+        console.error("Error al obtener el cart:", error);
+        res.send({
+            status: "error",
+            msg: `Error al obtener el cart con ID: ${cid}`
+        });
+    }
+});
+
 router.post('/:cid/products/:pid', async (req, res) => {//La ruta agrega un producto al carrito con el parámetro cid proporcionado
     try {
         const cid = req.params.cid;

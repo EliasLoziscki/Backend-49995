@@ -2,7 +2,7 @@ import { Router } from 'express';
 import MongoMessageManager from '../dao/mongoManagers/MongoMessageManager.js';
 
 const router = Router();
-
+const mongoMessageManager = new MongoMessageManager();
 
 router.post('/', async (req, res) => {
     try {

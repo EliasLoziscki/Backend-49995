@@ -32,10 +32,19 @@ router.post("/login", passport.authenticate("login", {failureRedirect:'/api/sess
         last_name: req.user.last_name,
         full_name: req.user.first_name + " " + req.user.last_name,
         age: req.user.age,
+        cart: req.user.cart,
         email: req.user.email,
         rol: req.user.rol
     }
     res.send({status:"success", payload: req.user});
+});
+
+router.get("/current", async (req,res)=>{//Si el usuario está logueado, devuelve la información del usuario, si no, devuelve un error 401 (No autorizado) 
+    if(req.session.user){
+        res.send({status:"success", payload: req.session.user});
+    }else{
+        res.status(401).send({status:"error", message:"No hay sesión iniciada"});
+    }
 });
 
 router.get("/faillogin", async (req, res)=>{//Si falla el login, passport.authenticate redirige a esta ruta y envía un error 400
@@ -54,6 +63,7 @@ router.get("/githubcallback", passport.authenticate("github", {failureRedirect:'
         last_name: req.user.last_name,
         full_name: req.user.first_name + " " + req.user.last_name,
         age: req.user.age,
+        cart: req.user.cart,
         email: req.user.email,
         rol: req.user.rol
     }

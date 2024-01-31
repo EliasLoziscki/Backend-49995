@@ -11,6 +11,8 @@ import MongoStore from "connect-mongo";
 import sessionRouter from "./routes/sessions.routes.js";
 import productModel from "./dao/models/products.model.js";
 import inicializePassport from "./config/passport.config.js";
+import { MongoProductRouter } from "./routes/dbProducts.routes.js";
+import { MongoCartRouter } from "./routes/dbCarts.routes.js";
 
 const PORT = 8080;
 let messages = [];
@@ -44,16 +46,18 @@ app.use(express.static(`${__dirname}/public`));//Para poder usar los archivos es
 
 app.use("/", viewRouter)
 app.use("/api/sessions", sessionRouter)
+app.use("/api/products", MongoProductRouter)
+app.use("/api/carts", MongoCartRouter)
 inicializePassport()
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 const mongoMessageManager = new MongoMessageManager();
 
 io.on("connection", (socket) => {
     console.log("Cliente conectado");
     
-
     socket.on('createProduct', async (productData) => {
         try {
             console.log('Datos del producto recibidos en el servidor:', productData);
