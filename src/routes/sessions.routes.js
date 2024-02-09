@@ -57,7 +57,7 @@ router.get("/faillogin", async (req, res)=>{//Si falla el login, passport.authen
 
 router.get("/github", passport.authenticate("github", {scope: ["user:email"]}), async (req, res)=>{});//passport.authenticate es un método de passport que recibe como parámetro la estrategia que se va a utilizar, en este caso "github" y un objeto con las opciones de configuración, en este caso scope que es un arreglo con los permisos que se le van a dar a la aplicación en github para acceder a la información del usuario que se está logueando en la aplicación
 
-router.get("/githubcallback", passport.authenticate("github", {failureRedirect:'/login'}), async (req, res)=>{//passport.authenticate es un método de passport que recibe como parámetro la estrategia que se va a utilizar, en este caso "github" y un objeto con las opciones de configuración, en este caso failureRedirect que redirige a la ruta /login si falla el login y successRedirect que redirige a la ruta /profile si el login es exitoso
+router.get("/githubcallback", passport.authenticate("github", {failureRedirect:'/login'}), async (req, res)=>{//passport.authenticate es un método de passport que recibe como parámetro la estrategia que se va a utilizar, en este caso "github" y un objeto con las opciones de configuración, en este caso failureRedirect que redirige a la ruta /login si falla el login y successRedirect que redirige a la ruta /products si el login es exitoso
     req.session.user = {
         first_name: req.user.first_name,
         last_name: req.user.last_name,
@@ -68,7 +68,7 @@ router.get("/githubcallback", passport.authenticate("github", {failureRedirect:'
         rol: req.user.rol
     }
     console.log(req.session.user)
-    res.redirect("/profile");
+    res.redirect("/products");
 });
 
 router.get("/logout", (req, res)=>{//req.session.destroy es un método de express-session que destruye la sesión del usuario y lo redirige al login

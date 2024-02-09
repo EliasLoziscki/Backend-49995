@@ -22,12 +22,13 @@ const inicializePassport = ()=>{
                     return done(null, false,{message: "Usuario ya se registro"});
                 }
 
+                const cart = await dbCartManager.createCart();
                 const newUser = {
                     first_name,
                     last_name,
                     email,
                     age,
-                    cart: await dbCartManager.createCart(),
+                    cart: cart._id,
                     password: createHash(password),
                     rol: "user"
                 }
@@ -63,15 +64,15 @@ const inicializePassport = ()=>{
         callbackURL: "http://localhost:8080/api/sessions/githubcallback"
     }, async (accessToken, refreshToken, profile, done)=>{
         try{
-            console.log(profile);
-            let user = await userModel.findOne({email: profile._json.email});
+            let user = await userModel.findOne({email: profile._json.login+"@github.com"});
             if(!user){//Si el usuario no existe en la base de datos, se crea uno nuevo con los datos que se obtienen de github
+                const cart = await dbCartManager.createCart();
                 const newUser = {
                     first_name: profile._json.name,
                     last_name: "@github",
                     email: `${profile._json.login}@github.com`, //es lo único que se me ocurrió por el tema del required:true en el modelo
                     age: 18,
-                    cart: await dbCartManager.createCart(),
+                    cart: cart._id,
                     password: crypto.randomBytes(16).toString('hex'),
                     rol: "user"
                 }

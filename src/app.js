@@ -13,12 +13,15 @@ import productModel from "./dao/models/products.model.js";
 import inicializePassport from "./config/passport.config.js";
 import { MongoProductRouter } from "./routes/dbProducts.routes.js";
 import { MongoCartRouter } from "./routes/dbCarts.routes.js";
+import { config } from "./config/config.js";
 
-const PORT = 8080;
+console.log(config)
+
+const PORT = config.server.port;
 let messages = [];
 const app = express();
 
-const MONGO = "mongodb+srv://waloz87:ASVmPWp4oZdPUTc2@cluster0.tul15f7.mongodb.net/ecommerce"
+const MONGO = config.mongo.url;
 const connection = mongoose.connect(MONGO)
 
 app.use(express.json()) 
